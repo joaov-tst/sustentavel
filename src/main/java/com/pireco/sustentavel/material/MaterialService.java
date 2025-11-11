@@ -2,16 +2,14 @@ package com.pireco.sustentavel.material;
 
 import com.pireco.sustentavel.material.dto.MaterialRequest;
 import com.pireco.sustentavel.material.dto.MaterialResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MaterialService {
-    private final MaterialRepository repo;
-
-    public MaterialService(MaterialRepository repo) {
-        this.repo = repo;
-    }
+    @Autowired
+    private MaterialRepository repo;
 
     @Transactional
     public MaterialResponse criar(MaterialRequest req) {
