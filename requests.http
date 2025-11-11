@@ -1,0 +1,9 @@
+### Criar material
+POST http://localhost:8181/api/materiais
+Content-Type: application/json
+
+{
+  "nome": "Vidro",
+  "quantidade": 12.5,
+  "unidade": "kg"
+}
