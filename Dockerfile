@@ -2,7 +2,7 @@
 FROM alpine/git AS submodule
 WORKDIR /repo
 # Clona diretamente o repositório do backend
-RUN git clone https://github.com/joao-tst/psg-si-2025-2-p5-tias-7679101-gestao-sustentavel-de-restaurante.git backend
+RUN git clone https://github.com/ICEI-PUCMinas-PSG-SI-TI/psg-si-2025-2-p5-tias-7679101-gestao-sustentavel-de-restaurante backend
 
 # Stage 2: Build da aplicação Java (APENAS src/backend)
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
