@@ -1,15 +1,14 @@
-# Stage 1: Clonar e inicializar o submódulo
+# Stage 1: Clonar o repositório do submódulo diretamente
 FROM alpine/git AS submodule
 WORKDIR /repo
-COPY .git .git
-COPY .gitmodules .gitmodules
-RUN git submodule update --init --recursive
+# Clona diretamente o repositório do backend
+RUN git clone https://github.com/joao-tst/psg-si-2025-2-p5-tias-7679101-gestao-sustentavel-de-restaurante.git backend
 
 # Stage 2: Build da aplicação Java (APENAS src/backend)
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
-# Copia SOMENTE a pasta src/backend do submódulo
-COPY --from=submodule /repo/psg-si-2025-2-p5-tias-7679101-gestao-sustentavel-de-restaurante/src/backend/ .
+# Copia SOMENTE a pasta src/backend
+COPY --from=submodule /repo/backend/src/backend/ .
 RUN mvn clean package -DskipTests
 
 # Stage 3: Runtime
