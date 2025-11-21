@@ -7,4 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsuarioRepository extends JpaRepositoryImplementation<UsuarioEntity, Long> {
     UsuarioEntity findByEmail(String username);
+
+    // 👇 usa o NOME DO CAMPO da entidade: tipoUsuario
+    long countByTipoUsuario(TipoUsuarioEnum tipoUsuario);
 }
+
+

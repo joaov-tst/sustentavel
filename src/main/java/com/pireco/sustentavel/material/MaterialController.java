@@ -25,6 +25,39 @@ public class MaterialController {
                 .body(resp);
     }
 
+    // Listar todos os materiais
+    @GetMapping
+    public ResponseEntity<?> listarTodos() {
+        return ResponseEntity.ok(service.listarTodos());
+    }
+
+    // Buscar material por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        MaterialResponse resp = service.buscarPorId(id);
+        return ResponseEntity.ok(resp);
+    }
+
+    // Atualizar material
+    @PutMapping("/{id}")
+    public ResponseEntity<MaterialResponse> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid MaterialRequest body
+    ) {
+        MaterialResponse resp = service.atualizar(id, body);
+        return ResponseEntity.ok(resp);
+    }
+
+    // Deletar material (lógico, se quiser)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }
+
+
+
+

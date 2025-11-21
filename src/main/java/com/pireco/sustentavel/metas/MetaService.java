@@ -63,10 +63,10 @@ public class MetaService {
     // escolhe qual campo usar de ResultadoMetricas, dependendo da meta
     private BigDecimal valorDaMetrica(Meta meta, ResultadoMetricas r) {
         return switch (meta.getMetrica()) {
-            case RESIDUO -> r.residuoKg();
-            case CO2 -> r.co2T();
-            case AGUA -> r.aguaM3();
-            case ENERGIA -> r.energiaKwh();
+            case RESIDUO -> r.residuo();
+            case CO2 -> r.co2();
+            case AGUA -> r.agua();
+            case ENERGIA -> r.energia();
             case DESCARTE_RS -> r.economiaDescarte();
             case SUBSTITUICAO_RS -> r.economiaSubstituicao();
             case TOTAL_RS -> r.economiaTotal();

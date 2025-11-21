@@ -7,3 +7,7 @@ FROM eclipse-temurin:21-jre-alpine
 COPY --from=build /src/app/target/*.jar app.jar
 CMD ["java", "-jar", "app.jar"]
 EXPOSE 8181
+
+## TESTE MIGRACAO
+
+
