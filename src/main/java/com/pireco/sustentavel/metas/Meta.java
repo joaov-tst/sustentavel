@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.pireco.sustentavel.material.Material;
+import java.time.LocalDate;
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "metas")
 public class Meta {
@@ -42,6 +46,32 @@ public class Meta {
     public enum Metrica {
         RESIDUO, CO2, AGUA, ENERGIA,
         DESCARTE_RS, SUBSTITUICAO_RS, TOTAL_RS
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "material_id")
+    private Material material; // null = meta geral, não ligada a material específico
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)          // <--- só isso, sem nullable=false
+    private StatusMeta status = StatusMeta.ATIVA;  // valor padrão
+
+    // getters e setters existentes...
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public StatusMeta getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusMeta status) {
+        this.status = status;
     }
 
     public enum Periodicidade { MENSAL, TRIMESTRAL, ANUAL }

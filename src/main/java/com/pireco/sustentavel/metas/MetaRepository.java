@@ -4,7 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MetaRepository extends JpaRepository<Meta, Long> {
 
-
+    long countByStatus(StatusMeta status);
 }
-
-

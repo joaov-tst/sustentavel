@@ -21,20 +21,37 @@ public class MetaService {
         this.calculoMetricasService = calculoMetricasService;
     }
 
+    // ===========================
+    // SALVAR META
+    // ===========================
     public Meta salvar(Meta meta) {
         return metaRepository.save(meta);
     }
 
+    // ===========================
+    // RESUMO PARA OS CARDS DA TELA
+    // ===========================
+    public MetaResumoDashboardResponse resumoDashboard() {
+        long ativas = metaRepository.countByStatus(StatusMeta.ATIVA);
+        long concluidas = metaRepository.countByStatus(StatusMeta.CONCLUIDA);
+        long emRisco = metaRepository.countByStatus(StatusMeta.EM_RISCO);
+
+        return new MetaResumoDashboardResponse(ativas, concluidas, emRisco);
+    }
+
+    // ===========================
+    // LISTA METAS COM STATUS DETALHADO
+    // ===========================
     public List<MetaStatusResponse> listarComStatus() {
-        // pega as metas salvas
+
         List<Meta> metas = metaRepository.findAll();
 
-        // pega as métricas atuais (residuo, CO2, água, energia, dinheiro)
         ResultadoMetricas resultado = calculoMetricasService.calcular();
 
         List<MetaStatusResponse> resposta = new ArrayList<>();
 
         for (Meta meta : metas) {
+
             BigDecimal valorAtual = valorDaMetrica(meta, resultado);
             BigDecimal progresso = progresso(meta.getValorAlvo(), valorAtual);
 
@@ -60,7 +77,10 @@ public class MetaService {
         return resposta;
     }
 
-    // escolhe qual campo usar de ResultadoMetricas, dependendo da meta
+    // ===========================
+    // AUXILIARES
+    // ===========================
+
     private BigDecimal valorDaMetrica(Meta meta, ResultadoMetricas r) {
         return switch (meta.getMetrica()) {
             case RESIDUO -> r.residuo();

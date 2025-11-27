@@ -1,4 +1,5 @@
 package com.pireco.sustentavel.metricas;
+import com.pireco.sustentavel.pontos.SolicitacaoPontosRepository;
 
 import com.pireco.sustentavel.material.Material;
 import com.pireco.sustentavel.material.MaterialRepository;
@@ -12,7 +13,9 @@ import java.util.List;
 import com.pireco.sustentavel.usuario.UsuarioRepository;
 import com.pireco.sustentavel.usuario.TipoUsuarioEnum;
 
-
+import com.pireco.sustentavel.pontos.SolicitacaoPontosRepository;
+import com.pireco.sustentavel.pontos.SolicitacaoPontos;
+import com.pireco.sustentavel.pontos.StatusSolicitacao;
 @Service
 public class CalculoMetricasService {
 
@@ -20,16 +23,19 @@ public class CalculoMetricasService {
     private final FatorConversaoRepository fatorConversaoRepository;
     private final FatorFinanceiroRepository fatorFinanceiroRepository;
     private final UsuarioRepository usuarioRepository;
-
-    public CalculoMetricasService(MaterialRepository materialRepository,
-                                  FatorConversaoRepository fatorConversaoRepository,
-                                  FatorFinanceiroRepository fatorFinanceiroRepository,
-                                  UsuarioRepository usuarioRepository) {
-
+    private final SolicitacaoPontosRepository solicitacaoPontosRepository; //
+    public CalculoMetricasService(
+            MaterialRepository materialRepository,
+            FatorConversaoRepository fatorConversaoRepository,
+            FatorFinanceiroRepository fatorFinanceiroRepository,
+            UsuarioRepository usuarioRepository,
+            SolicitacaoPontosRepository solicitacaoPontosRepository
+    ) {
         this.materialRepository = materialRepository;
         this.fatorConversaoRepository = fatorConversaoRepository;
         this.fatorFinanceiroRepository = fatorFinanceiroRepository;
-        this.usuarioRepository = usuarioRepository; // 👈 AGORA está inicializado!
+        this.usuarioRepository = usuarioRepository;
+        this.solicitacaoPontosRepository = solicitacaoPontosRepository;
     }
 
     // ================== MÉTRICAS GERAIS (O QUE JÁ EXISTIA) ==================
@@ -153,7 +159,19 @@ public class CalculoMetricasService {
 
         // 5) clientes ativos e pontos distribuídos
         long clientesAtivos = usuarioRepository.countByTipoUsuario(TipoUsuarioEnum.Cliente);
-        long pontosDistribuidos = 0L; // ainda fixo por enquanto
+
+// pega todas as solicitações APROVADAS
+        List<SolicitacaoPontos> aprovadas =
+                solicitacaoPontosRepository.findByStatusOrderByDataSolicitacaoAsc(StatusSolicitacao.APROVADA);
+
+// soma os pontos solicitados
+        long pontosDistribuidos = aprovadas.stream()
+                .mapToLong(s -> s.getPontosSolicitados() == null ? 0 : s.getPontosSolicitados())
+                .sum();
+
+// debug
+        System.out.println("[DEBUG] solicitações aprovadas: " + aprovadas.size());
+        System.out.println("[DEBUG] pontos distribuídos: " + pontosDistribuidos);
 
         return new HomeMetricasResponse(
                 totalReaproveitado,

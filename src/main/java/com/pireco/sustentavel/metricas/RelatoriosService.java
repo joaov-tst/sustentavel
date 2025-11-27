@@ -24,8 +24,20 @@ public class RelatoriosService {
 
         LocalDate inicio = filtro.inicio();
         LocalDate fim = filtro.fim();
-        String categoria = filtro.categoria();
-        String tipoPeriodo = filtro.tipoPeriodo() == null ? "DIA" : filtro.tipoPeriodo();
+        String categoria = (filtro.categoria() == null || filtro.categoria().isBlank())
+                ? null
+                : filtro.categoria().trim();
+
+        boolean todos = categoria == null
+                || categoria.equalsIgnoreCase("todos")
+                || categoria.equalsIgnoreCase("todas")
+                || categoria.equalsIgnoreCase("todos os materiais")
+                || categoria.equalsIgnoreCase("todas categorias")
+                || categoria.equalsIgnoreCase("geral");
+
+        String tipoPeriodo = (filtro.tipoPeriodo() == null || filtro.tipoPeriodo().isBlank())
+                ? "DIA"
+                : filtro.tipoPeriodo().trim().toUpperCase();
 
         // 1) Buscar todos materiais e filtrar por data + categoria
         List<Material> materiais = materialRepository.findAll();
@@ -36,10 +48,8 @@ public class RelatoriosService {
                     LocalDate data = m.getCriadoEm().toLocalDate();
                     return (!data.isBefore(inicio) && !data.isAfter(fim));
                 })
-                .filter(m -> categoria == null
-                        || categoria.isBlank()
-                        || categoria.equalsIgnoreCase("Todos os Materiais")
-                        || m.getNome().equalsIgnoreCase(categoria))
+                .filter(m -> todos ||
+                        (m.getNome() != null && m.getNome().equalsIgnoreCase(categoria)))
                 .toList();
 
         long registrosNoPeriodo = filtrados.size();
