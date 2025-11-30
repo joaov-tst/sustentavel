@@ -10,6 +10,8 @@ public interface UsuarioRepository extends JpaRepositoryImplementation<UsuarioEn
 
     // 👇 usa o NOME DO CAMPO da entidade: tipoUsuario
     long countByTipoUsuario(TipoUsuarioEnum tipoUsuario);
+
+    UsuarioEntity findByCpf(String cpf);
 }
 
 

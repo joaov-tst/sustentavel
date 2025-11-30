@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class AuthService implements UserDetailsService {
     @Autowired
@@ -17,6 +19,8 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UsuarioEntity user = repository.findByEmail(username);
+        if(Objects.isNull(user)) throw new UsernameNotFoundException("Credenciais inválidas. Verifique email e senha e tente novamente.");
         return repository.findByEmail(username);
     }
 

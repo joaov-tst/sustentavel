@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -39,15 +41,20 @@ public class AuthController {
             UsuarioEntity user = (UsuarioEntity)auth.getPrincipal();
             return ResponseEntity.ok().body(LoginResponseDTO.converter(user, tokenService.genereteToken(user)));
 
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Credenciais inválidas. Verifique email e senha e tente novamente.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: " + e);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Erro ao fazer login. Tente novamente.");
         }
     }
 
     @PostMapping(value = "/registrar")
     public ResponseEntity cadastrar(@RequestBody UsuarioDTO data){
         if(Objects.nonNull(usuarioRepository.findByEmail(data.email())))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Esse email já está associado à uma conta");
+
+        if(Objects.nonNull(usuarioRepository.findByCpf(data.cpf())))
+            return ResponseEntity.badRequest().body("CPF inválido.");
 
         String senhaCripografada = passwordEncoder.encode(data.senha());
         UsuarioEntity novoUsuario = new UsuarioEntity(data.email(), senhaCripografada, data.cpf(), data.nome(), data.tipo());
