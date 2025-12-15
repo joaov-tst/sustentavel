@@ -58,4 +58,8 @@ public class Cliente {
     public void setPontos(int pontos) {
         this.pontos = pontos;
     }
+
+    public void descontarPontos(Integer pontosParaDescontar){
+        this.pontos -= pontosParaDescontar;
+    }
 }

@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/helloworld").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll();
+                        .anyRequest().authenticated();
                         }
                 );
 
