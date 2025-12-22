@@ -48,7 +48,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/helloworld").permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll();
                         }
                 );

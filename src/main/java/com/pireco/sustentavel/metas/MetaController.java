@@ -7,7 +7,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/metas")
-@CrossOrigin(origins = "*") // se o front estiver em outro domínio/porta
 public class MetaController {
 
     private final MetaService metaService;
